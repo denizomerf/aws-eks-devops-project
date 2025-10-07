@@ -1,0 +1,15 @@
+serviceAccount:
+  create: true
+  name: "fluent-bit-sa"
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::308740035407:role/InsightPoll-Fluent-Bit-Role" 
+
+config:
+  outputs: |
+    [OUTPUT]
+        Name cloudwatch_logs
+        Match *
+        region eu-central-1
+        log_group_name /aws/eks/insight-poll/app-logs
+        log_stream_prefix from-fluent-bit-
+        auto_create_group true

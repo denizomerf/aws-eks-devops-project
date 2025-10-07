@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsightPoll - Real-time Polling</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>InsightPoll</h1>
+            <p>Your Voice, Instantly Visualized</p>
+        </header>
+        <main>
+            <div id="poll-container" class="poll-container">
+                <h2>Which cloud provider do you prefer for DevOps?</h2>
+                <div class="options">
+                    <button class="option" data-poll-id="cloud-provider-poll" data-option-id="aws">AWS</button>
+                    <button class="option" data-poll-id="cloud-provider-poll" data-option-id="azure">Azure</button>
+                    <button class="option" data-poll-id="cloud-provider-poll" data-option-id="gcp">GCP</button>
+                </div>
+            </div>
+            <div id="results-container" class="results-container" style="display: none;">
+                <h3>Results:</h3>
+                <p id="vote-result"></p>
+                <button id="back-to-poll">Vote Again</button>
+            </div>
+            <div id="loading-spinner" class="loading-spinner" style="display: none;"></div>
+        </main>
+        <footer>
+            <p>Powered by a fully automated AWS Serverless & EKS infrastructure.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

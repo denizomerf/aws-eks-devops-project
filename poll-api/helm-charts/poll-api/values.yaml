@@ -1,0 +1,14 @@
+replicaCount: 2
+
+image:
+  repository: "308740035407.dkr.ecr.eu-central-1.amazonaws.com/poll-api"
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 80
+
+database:
+  host: "insight-poll-db.cjc62iigoytf.eu-central-1.rds.amazonaws.com" 
+  secretArn: "arn:aws:secretsmanager:eu-central-1:308740035407:secret:insight-poll/db-password-nWdyyi" 

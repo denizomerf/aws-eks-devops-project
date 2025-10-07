@@ -1,0 +1,39 @@
+variables:
+  ECR_REPO_NAME: "poll-api"
+  REPOSITORY_URL: "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPO_NAME"
+
+stages:
+  - build
+  - deploy
+
+build_image:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  
+  only:
+    - master
+    - main
+
+  before_script:
+    - apk add --no-cache aws-cli
+    - docker --version
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+
+  script:
+    - docker build -t $REPOSITORY_URL:$CI_COMMIT_SHORT_SHA .
+    - docker push $REPOSITORY_URL:$CI_COMMIT_SHORT_SHA
+
+deploy_to_eks:
+  stage: deploy
+  image:
+    name: alpine/k8s:1.28.2
+  
+  only:
+    - master
+    - main
+
+  script:
+    - aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name $EKS_CLUSTER_NAME
+    - helm upgrade --install poll-api ./helm-charts/poll-api --set image.repository=$REPOSITORY_URL --set image.tag=$CI_COMMIT_SHORT_SHA
