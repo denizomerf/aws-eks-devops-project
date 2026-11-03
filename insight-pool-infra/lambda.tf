@@ -33,10 +33,7 @@ resource "aws_iam_role_policy" "lambda_dynamodb_policy" {
     Statement = [
       {
         Action = [
-          "dynamodb:PutItem",
-          "dynamodb:GetItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem"
+          "dynamodb:PutItem"
         ],
         Effect   = "Allow",
         Resource = aws_dynamodb_table.votes.arn 

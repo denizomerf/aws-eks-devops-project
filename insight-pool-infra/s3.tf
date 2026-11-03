@@ -35,7 +35,6 @@ data "aws_iam_policy_document" "s3_policy" {
     }
   }
 }
-# --- DÜZELTME BİTİŞİ ---
 
 resource "aws_s3_bucket_policy" "frontend" {
   bucket = aws_s3_bucket.frontend.id
