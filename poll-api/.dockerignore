@@ -1,0 +1,5 @@
+helm-charts/
+.gitlab-ci.yml
+__pycache__/
+*.pyc
+.env

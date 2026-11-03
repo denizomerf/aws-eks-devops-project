@@ -19,8 +19,12 @@ def get_db_connection():
         )
         return conn
     except Exception as e:
-        print(f"Veritabanı bağlantı hatası: {e}")
+        app.logger.error("Database connection error: %s", e)
         return None
+
+@app.route("/healthz", methods=['GET'])
+def healthz():
+    return jsonify({"status": "ok"})
 
 @app.route("/", methods=['GET'])
 def get_status():
@@ -40,7 +44,9 @@ def db_check():
         conn.close()
         return jsonify({"status": "ok", "message": "Database connection successful", "db_version": db_version})
     except Exception as e:
-        return jsonify({"status": "error", "message": f"Database query failed: {e}"}), 500
+        app.logger.error("Database query failed: %s", e)
+        return jsonify({"status": "error", "message": "Database query failed"}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Local development only; in the container gunicorn serves the app
+    app.run(host='0.0.0.0', port=5000)
