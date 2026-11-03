@@ -20,10 +20,26 @@ spec:
             - name: http
               containerPort: 5000
               protocol: TCP
-       
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
           env:
             - name: DATABASE_HOST
-              value: {{ .Values.database.host }}
+              value: {{ .Values.database.host | quote }}
             - name: DATABASE_USER
               value: "polladmin"
             - name: DATABASE_NAME

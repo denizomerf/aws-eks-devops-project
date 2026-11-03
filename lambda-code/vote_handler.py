@@ -2,7 +2,7 @@ import json
 import os
 import uuid
 import boto3
-from datetime import datetime 
+from datetime import datetime, timezone
 
 dynamodb = boto3.resource('dynamodb')
 TABLE_NAME = os.environ.get('DYNAMODB_TABLE_NAME')
@@ -22,7 +22,7 @@ def lambda_handler(event, context):
             }
 
         vote_id = str(uuid.uuid4())
-        timestamp = datetime.utcnow().isoformat()
+        timestamp = datetime.now(timezone.utc).isoformat()
 
         item_to_save = {
             'vote_id': vote_id,
@@ -47,5 +47,5 @@ def lambda_handler(event, context):
         return {
             'statusCode': 500,
             'headers': { 'Access-Control-Allow-Origin': '*' },
-            'body': json.dumps({'message': f'An error occurred: {str(e)}'})
+            'body': json.dumps({'message': 'An internal error occurred'})
         }
