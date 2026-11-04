@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: insight-pool-infra
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check -recursive -diff
+      - run: terraform init -backend=false
+      - run: terraform validate
+
+  poll-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t poll-api:ci poll-api/
+      - name: Smoke test
+        run: |
+          docker run -d --name api -p 5000:5000 poll-api:ci
+          for i in $(seq 1 20); do curl -sf localhost:5000/healthz && break; sleep 1; done
+          curl -sf localhost:5000/ | grep -q "Poll-API is running"
+
+  helm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - run: helm lint poll-api/helm-charts/poll-api
+      - name: Validate rendered manifests
+        run: |
+          helm template poll-api poll-api/helm-charts/poll-api > rendered.yaml
+          docker run --rm -v "$PWD:/w" ghcr.io/yannh/kubeconform:v0.6.7 -strict -summary /w/rendered.yaml
+
+  lambda:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m py_compile lambda-code/vote_handler.py
