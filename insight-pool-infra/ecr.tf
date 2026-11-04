@@ -1,6 +1,6 @@
 
 resource "aws_ecr_repository" "poll_api" {
-  name = "poll-api" # Depo (repository) adı
+  name = "poll-api"
 
 
   image_tag_mutability = "MUTABLE"

@@ -1,7 +1,7 @@
 resource "aws_wafv2_web_acl" "main" {
   provider = aws.us_east_1
-  name  = "InsightPoll-WAF-ACL"
-  scope = "CLOUDFRONT"
+  name     = "InsightPoll-WAF-ACL"
+  scope    = "CLOUDFRONT"
 
   default_action {
     allow {}

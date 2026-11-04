@@ -23,6 +23,6 @@ output "api_endpoint_url" {
 }
 
 output "frontend_bucket_name" {
- description  = "S3 bucket"
- value = aws_s3_bucket.frontend.bucket 
+  description = "S3 bucket"
+  value       = aws_s3_bucket.frontend.bucket
 }

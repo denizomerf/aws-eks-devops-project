@@ -3,11 +3,11 @@ resource "aws_iam_role" "eks_cluster_role" {
   name = "InsightPoll-EKSClusterRole"
 
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17",
+    Version = "2012-10-17",
     Statement = [
       {
-        Action    = "sts:AssumeRole",
-        Effect    = "Allow",
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
         Principal = {
           Service = "eks.amazonaws.com"
         }
@@ -26,11 +26,11 @@ resource "aws_iam_role" "eks_node_group_role" {
   name = "InsightPoll-EKSNodeGroupRole"
 
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17",
+    Version = "2012-10-17",
     Statement = [
       {
-        Action    = "sts:AssumeRole",
-        Effect    = "Allow",
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
         Principal = {
           Service = "ec2.amazonaws.com"
         }
@@ -84,8 +84,8 @@ resource "aws_eks_node_group" "main" {
   cluster_name    = aws_eks_cluster.main.name
   node_group_name = "InsightPoll-NodeGroup"
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
-  
-  subnet_ids      = aws_subnet.private.*.id
+
+  subnet_ids = aws_subnet.private.*.id
 
   scaling_config {
     desired_size = 2
@@ -133,11 +133,10 @@ resource "aws_iam_role_policy_attachment" "ebs_csi_driver_role_attachment" {
 
 
 resource "aws_eks_addon" "ebs_csi_driver" {
-  cluster_name           = aws_eks_cluster.main.name
-  addon_name             = "aws-ebs-csi-driver"
+  cluster_name             = aws_eks_cluster.main.name
+  addon_name               = "aws-ebs-csi-driver"
   service_account_role_arn = aws_iam_role.ebs_csi_driver_role.arn
-  
-  # Terraform'un bu eklentiyi kurmadan önce OIDC provider'ın hazır olmasını beklemesini sağlıyoruz.
+
   depends_on = [
     aws_iam_openid_connect_provider.main
   ]

@@ -1,6 +1,6 @@
 
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16" 
+  cidr_block = "10.0.0.0/16"
 
   tags = {
     Name = "InsightPoll-VPC"
@@ -12,11 +12,11 @@ data "aws_availability_zones" "available" {}
 
 
 resource "aws_subnet" "public" {
-  count                   = 2 
+  count                   = 2
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.${count.index + 1}.0/24"
   availability_zone       = data.aws_availability_zones.available.names[count.index]
-  map_public_ip_on_launch = true 
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "InsightPoll-PublicSubnet-${count.index + 1}"
@@ -49,8 +49,8 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block = "0.0.0.0/0" 
-    gateway_id = aws_internet_gateway.main.id 
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
   }
 
   tags = {
@@ -69,7 +69,7 @@ resource "aws_route_table_association" "public" {
 
 
 resource "aws_eip" "nat" {
-  domain   = "vpc"
+  domain     = "vpc"
   depends_on = [aws_internet_gateway.main]
 
   tags = {

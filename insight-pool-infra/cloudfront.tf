@@ -8,9 +8,9 @@ resource "aws_cloudfront_origin_access_control" "main" {
 
 resource "aws_cloudfront_distribution" "main" {
   origin {
-    domain_name              = aws_s3_bucket.frontend.bucket_regional_domain_name
-    origin_id                = "S3-${aws_s3_bucket.frontend.id}"
-    
+    domain_name = aws_s3_bucket.frontend.bucket_regional_domain_name
+    origin_id   = "S3-${aws_s3_bucket.frontend.id}"
+
     origin_access_control_id = aws_cloudfront_origin_access_control.main.id
   }
 
@@ -47,7 +47,7 @@ resource "aws_cloudfront_distribution" "main" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
-  
+
   web_acl_id = aws_wafv2_web_acl.main.arn
 }
 

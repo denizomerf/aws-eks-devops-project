@@ -2,7 +2,7 @@ resource "aws_apigatewayv2_api" "main" {
   name          = "InsightPoll-HttpApi"
   protocol_type = "HTTP"
   cors_configuration {
-    allow_origins = ["*"] # Tüm domainlerden gelen isteklere izin ver (geliştirme için)
+    allow_origins = ["*"] # TODO: restrict to the CloudFront domain
     allow_methods = ["POST", "GET", "OPTIONS"]
     allow_headers = ["Content-Type"]
   }
@@ -16,7 +16,7 @@ resource "aws_apigatewayv2_integration" "lambda" {
 
 resource "aws_apigatewayv2_route" "vote" {
   api_id    = aws_apigatewayv2_api.main.id
-  route_key = "POST /vote" # Sadece POST isteklerini kabul et
+  route_key = "POST /vote"
   target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
 }
 
